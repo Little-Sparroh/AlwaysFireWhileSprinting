@@ -1,0 +1,36 @@
+[config]
+schemaVersion = "0.0.1"
+
+[package]
+namespace = "Sparroh"
+name = "AlwaysFireWhileSprinting"
+description = "Allows firing weapons while sprinting/sliding, with a sprint-to-fire fix for immediate fire and sprint resume."
+websiteUrl = "https://github.com/Little-Sparroh/AlwaysFireWhileSprinting"
+containsNsfwContent = false
+
+[package.dependencies]
+BepInEx-BepInExPack_Mycopunk = "5.4.2403"
+
+[build]
+icon = "icon.png"
+readme = "README.md"
+outdir = "build"
+
+[[build.copy]]
+source = "bin/Release/net48/AlwaysFireWhileSprinting.dll"
+target = "BepInEx/plugins/AlwaysFireWhileSprinting.dll"
+
+[[build.copy]]
+source = "CHANGELOG.md"
+target = "CHANGELOG.md"
+
+[[build.copy]]
+source = "LICENSE"
+target = "LICENSE"
+
+[publish]
+repository = "https://thunderstore.io"
+communities = [ "mycopunk" ]
+
+[publish.categories]
+mycopunk = [ "client" ]
