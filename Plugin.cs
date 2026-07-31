@@ -4,7 +4,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 
 [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-[MycoMod(null)]
+[MycoMod(null, ModFlags.IsSandbox)]
 public class SparrohPlugin : BaseUnityPlugin
 {
     public const string PluginGUID = "sparroh.alwaysfirewhilesprinting";
