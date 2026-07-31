@@ -1,63 +1,67 @@
 # Always Fire While Sprinting
 
-A BepInEx mod for Mycopunk that allows firing weapons while sprinting and sliding, with a sprint-to-fire fix.
+A BepInEx mod for Mycopunk that allows firing weapons while sprinting and sliding, with an optional sprint-to-fire fix
+for immediate fire and proper sprint resume.
 
 ## Features
 
-- **Fire While Sprinting**: Allows weapons to fire during sprint.
-- **Fire While Sliding**: Allows weapons to fire during slide.
-- **Sprint To Fire Fix**: Removes delay when firing from sprint and restores sprint properly when releasing fire.
+- **Fire While Sprinting** — Allows weapons to fire during sprint.
+- **Fire While Sliding** — Allows weapons to fire during slide.
+- **Sprint To Fire Fix** (optional, off by default) — Removes delay when firing from sprint and restores sprint properly
+  when releasing fire.
 
-## Getting Started
+## Dependencies
 
-### Dependencies
+- Mycopunk
+- [BepInEx Pack for Mycopunk](https://thunderstore.io/c/mycopunk/p/BepInEx/BepInExPack_Mycopunk/) 5.4.2403 or compatible
 
-* Mycopunk (base game)
-* [BepInEx](https://github.com/BepInEx/BepInEx) - Version 5.4.2403 or compatible
-* .NET Framework 4.8
-* [HarmonyLib](https://github.com/pardeike/Harmony) (included via NuGet)
+## Installation
 
-### Building/Compiling
+**Via Thunderstore (recommended)**
 
-1. Clone this repository
-2. Open the solution file in Visual Studio, Rider, or your preferred C# IDE
-3. Build the project in Release mode to generate the .dll file
+1. Install with a Thunderstore mod manager (e.g. r2modman or the Thunderstore App).
+2. The mod is placed in the correct directory automatically.
 
-Alternatively, use dotnet CLI:
+**Manual installation**
+
+1. Install BepInEx for Mycopunk if you have not already.
+2. Copy `AlwaysFireWhileSprinting.dll` into `<Mycopunk Directory>/BepInEx/plugins/`.
+
+The mod loads automatically with BepInEx. Check the BepInEx log for a load confirmation message.
+
+## Configuration
+
+Settings are in:
+
+`<Mycopunk Directory>/BepInEx/config/sparroh.alwaysfirewhilesprinting.cfg`
+
+| Setting                  | Default | Description                                                                                                    |
+|--------------------------|---------|----------------------------------------------------------------------------------------------------------------|
+| Can Fire While Sprinting | `true`  | Allows firing weapons while sprinting.                                                                         |
+| Can Fire While Sliding   | `true`  | Allows firing weapons while sliding.                                                                           |
+| Sprint To Fire Fix       | `false` | Enables the Sprint-to-Fire fix that allows immediate firing while sprinting and proper sprint resume behavior. |
+
+Config changes are hot-reloaded while the game is running. Edit and save the `.cfg` file and the mod picks up the new
+values without a restart. Fire-constraint options are re-applied to equipped weapons live.
+
+## Building
+
+1. Clone this repository.
+2. Open the solution in Visual Studio, Rider, or another C# IDE, **or** build from the command line:
+
 ```bash
 dotnet build --configuration Release
 ```
 
-### Installing
+3. The output assembly is `bin/Release/netstandard2.1/AlwaysFireWhileSprinting.dll`.
 
-**Via Thunderstore (Recommended)**:
-1. Download and install via Thunderstore Mod Manager
-2. The mod will be automatically installed to the correct directory
-
-**Manual Installation**:
-1. Place the built `AlwaysFireWhileSprinting.dll` in your `<Mycopunk Directory>/BepInEx/plugins/` folder
-
-### Executing program
-
-The mod loads automatically through BepInEx when the game starts. Check the BepInEx console for loading confirmation messages.
-
-## Configuration
-
-Access mod settings through the BepInEx configuration file at `<Mycopunk Directory>/BepInEx/config/sparroh.alwaysfirewhilesprinting.cfg`:
-
-| Setting | Default | Description |
-|---------|---------|-------------|
-| Can Fire While Sprinting | `true` | Allows firing weapons while sprinting. |
-| Can Fire While Sliding | `true` | Allows firing weapons while sliding. |
-| Sprint To Fire Fix | `true` | Enables immediate firing while sprinting and proper sprint resume. |
-
-Config changes are hot-reloaded while the game is running. Edit and save the `.cfg` file and the mod will pick up the new values without a restart.
+**Build requirements:** .NET SDK (targeting `netstandard2.1`), game assemblies referenced by the project, and
+BepInEx/Harmony references.
 
 ## Help
 
-* **Mod not loading?** Verify BepInEx is installed correctly and check console logs for errors
-* **Still can't fire while sprinting?** Ensure the config options are enabled (changes apply live; no restart needed)
-
+- **Mod not loading?** Confirm BepInEx is installed correctly and check the BepInEx log for errors.
+- **Still can't fire while sprinting?** Ensure the config options are enabled (changes apply live; no restart needed).
 
 ## Authors
 
@@ -65,4 +69,4 @@ Config changes are hot-reloaded while the game is running. Edit and save the `.c
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

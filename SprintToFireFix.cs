@@ -1,7 +1,8 @@
-using HarmonyLib;
-using UnityEngine;
+using System;
 using System.Reflection;
+using HarmonyLib;
 using Pigeon.Movement;
+using UnityEngine;
 
 public class SprintToFireData : MonoBehaviour
 {
@@ -15,9 +16,12 @@ public static class SprintToFireFixPatches
     private static readonly FieldInfo gunDataField = AccessTools.Field(typeof(Gun), "gunData");
     private static readonly FieldInfo isFireInputHeldField = AccessTools.Field(typeof(Gun), "isFireInputHeld");
     private static readonly MethodInfo tryFireMethod = AccessTools.Method(typeof(Gun), "TryFire");
-    private static readonly PropertyInfo canFireWithoutAmmoProperty = AccessTools.Property(typeof(Gun), "CanFireWithoutAmmo");
 
-    private static bool IsEnabled => SparrohPlugin.enableSprintToFireFix != null && SparrohPlugin.enableSprintToFireFix.Value;
+    private static readonly PropertyInfo canFireWithoutAmmoProperty =
+        AccessTools.Property(typeof(Gun), "CanFireWithoutAmmo");
+
+    private static bool IsEnabled =>
+        ConfigManager.EnableSprintToFireFix != null && ConfigManager.EnableSprintToFireFix.Value;
 
     [HarmonyPatch(typeof(Gun), "CanFireDuringAnimationState")]
     [HarmonyPrefix]
@@ -35,10 +39,11 @@ public static class SprintToFireFixPatches
                 return false;
             }
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             SparrohPlugin.Logger.LogError($"Error in CanFireDuringAnimationState patch: {ex.Message}");
         }
+
         return true;
     }
 
@@ -58,10 +63,11 @@ public static class SprintToFireFixPatches
                 return false;
             }
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             SparrohPlugin.Logger.LogError($"Error in MinWalkingWeightToFire patch: {ex.Message}");
         }
+
         return true;
     }
 
@@ -77,13 +83,9 @@ public static class SprintToFireFixPatches
             var isFireInputHeld = (bool)isFireInputHeldField.GetValue(__instance);
 
             var sprintData = __instance.gameObject.GetComponent<SprintToFireData>();
-            if (sprintData == null)
-            {
-                sprintData = __instance.gameObject.AddComponent<SprintToFireData>();
-            }
+            if (sprintData == null) sprintData = __instance.gameObject.AddComponent<SprintToFireData>();
 
             if (sprintData.PreviousFireInputHeld && !isFireInputHeld)
-            {
                 if (sprintData.SprintingLockedBySprintToFire)
                 {
                     var player = playerField.GetValue(__instance) as Player;
@@ -94,15 +96,12 @@ public static class SprintToFireFixPatches
 
                         if (player.AutoSprint)
                         {
-                            var wantsToSprintField = typeof(Player).GetField("wantsToSprint", BindingFlags.NonPublic | BindingFlags.Instance);
-                            if (wantsToSprintField != null)
-                            {
-                                wantsToSprintField.SetValue(player, true);
-                            }
+                            var wantsToSprintField = typeof(Player).GetField("wantsToSprint",
+                                BindingFlags.NonPublic | BindingFlags.Instance);
+                            if (wantsToSprintField != null) wantsToSprintField.SetValue(player, true);
                         }
                     }
                 }
-            }
 
             sprintData.PreviousFireInputHeld = isFireInputHeld;
 
@@ -112,7 +111,7 @@ public static class SprintToFireFixPatches
                 wantsToFireProperty.SetValue(__instance, true);
             }
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             SparrohPlugin.Logger.LogError($"Error in Update postfix: {ex.Message}");
         }
@@ -128,16 +127,10 @@ public static class SprintToFireFixPatches
         try
         {
             var player = playerField.GetValue(__instance) as Player;
-            if (player == null)
-            {
-                return true;
-            }
+            if (player == null) return true;
 
             var gunData = gunDataField.GetValue(__instance);
-            if (gunData == null)
-            {
-                return true;
-            }
+            if (gunData == null) return true;
 
             var isFireInputHeld = (bool)isFireInputHeldField.GetValue(__instance);
 
@@ -148,20 +141,18 @@ public static class SprintToFireFixPatches
 
                 var canFireWithoutAmmo = (bool)canFireWithoutAmmoProperty.GetValue(__instance);
 
-                if (canChargeFire && ((double)__instance.RemainingAmmo >= 1.0 || canFireWithoutAmmo))
+                if (canChargeFire && (__instance.RemainingAmmo >= 1.0 || canFireWithoutAmmo))
                 {
                     var fireConstraints = gunData.GetType().GetField("fireConstraints").GetValue(gunData);
-                    var canFireWhileSprinting = (int)fireConstraints.GetType().GetField("canFireWhileSprinting").GetValue(fireConstraints);
+                    var canFireWhileSprinting = (int)fireConstraints.GetType().GetField("canFireWhileSprinting")
+                        .GetValue(fireConstraints);
 
                     if (canFireWhileSprinting != 1)
                     {
                         player.SprintLocks = 1;
 
                         var sprintData = __instance.gameObject.GetComponent<SprintToFireData>();
-                        if (sprintData != null)
-                        {
-                            sprintData.SprintingLockedBySprintToFire = true;
-                        }
+                        if (sprintData != null) sprintData.SprintingLockedBySprintToFire = true;
                     }
 
                     tryFireMethod.Invoke(__instance, null);
@@ -169,11 +160,12 @@ public static class SprintToFireFixPatches
                 }
             }
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             SparrohPlugin.Logger.LogError($"Error in SprintToFireFix patch: {ex.Message}");
             SparrohPlugin.Logger.LogError($"Stack trace: {ex.StackTrace}");
         }
+
         return true;
     }
 }
